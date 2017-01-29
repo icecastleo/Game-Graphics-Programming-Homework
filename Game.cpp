@@ -137,7 +137,7 @@ void Game::CreateMatrices()
 	// - This should match the window's aspect ratio, and also update anytime
 	//   the window resizes (which is already happening in OnResize() below)
 	XMMATRIX P = XMMatrixPerspectiveFovLH(
-		0.25f * 3.1415926535f,		// Field of View Angle
+		0.5f * 3.1415926535f,		// Field of View Angle
 		(float)width / height,		// Aspect ratio
 		0.1f,						// Near clip plane distance
 		100.0f);					// Far clip plane distance
@@ -175,31 +175,29 @@ void Game::CreateBasicGeometry()
 
 	meshes.push_back(new Mesh(vertices, 3, indices, 3, device));
 
-	//// Create some temporary variables to represent colors
-	//// - Not necessary, just makes things more readable
-	//XMFLOAT4 red = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	//XMFLOAT4 green = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	//XMFLOAT4 blue = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-
-	// Set up the vertices of the triangle we would like to draw
-	// - We're going to copy this array, exactly as it exists in memory
-	//    over to a DirectX-controlled data structure (the vertex buffer)
+	// Additional meshes
 	Vertex vertices2[] =
 	{
-		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(+15.0f, -1.0f, +0.0f), blue },
-		{ XMFLOAT3(-15.0f, -1.0f, +0.0f), green },
+		{ XMFLOAT3(+3.0f, +1.0f, +0.0f), red },
+		{ XMFLOAT3(+5.0f, +1.0f, +0.0f), red },
+		{ XMFLOAT3(+5.0f, -1.0f, +0.0f), blue },
+		{ XMFLOAT3(+3.0f, -1.0f, +0.0f), green },
 	};
 
-	// Set up the indices, which tell us which vertices to use and in which order
-	// - This is somewhat redundant for just 3 vertices (it's a simple example)
-	// - Indices are technically not required if the vertices are in the buffer 
-	//    in the correct order and each one will be used exactly once
-	// - But just to see how it's done...
-	//int indices[] = { 0, 1, 2 };
+	int indices2[] = { 0, 1, 2, 0, 2, 3 };
 
-	meshes.push_back(new Mesh(vertices2, 3, indices, 3, device));
+	meshes.push_back(new Mesh(vertices2, 4, indices2, 6, device));
 
+	Vertex vertices3[] =
+	{
+		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), red },
+		{ XMFLOAT3(-3.0f, +1.0f, +0.0f), blue },
+		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), green },
+	};
+
+	int indices3[] = { 0, 1, 2 };
+
+	meshes.push_back(new Mesh(vertices3, 3, indices3, 3, device));
 }
 
 
