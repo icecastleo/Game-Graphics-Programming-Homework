@@ -3,8 +3,6 @@
 #include <d3d11.h>
 #include "Vertex.h"
 
-
-
 class Mesh
 {
 public:

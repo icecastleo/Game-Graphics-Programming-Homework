@@ -4,8 +4,7 @@
 #include "SimpleShader.h"
 #include <DirectXMath.h>
 #include <vector>
-
-class Mesh;
+#include "Mesh.h"
 
 class Game 
 	: public DXCore
