@@ -5,6 +5,7 @@
 #include <DirectXMath.h>
 #include <vector>
 #include "Mesh.h"
+#include "Entity.h"
 
 class Game 
 	: public DXCore
@@ -28,6 +29,7 @@ public:
 	void OnMouseWheel(float wheelDelta,   int x, int y);
 private:
 	std::vector<Mesh *> meshes;
+	std::vector<Entity *> entities;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 
