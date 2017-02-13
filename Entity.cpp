@@ -6,8 +6,7 @@ Entity::Entity(Mesh *mesh)
 {
 	_mesh = mesh;
 
-	XMMATRIX W = XMMatrixIdentity();
-	XMStoreFloat4x4(&_worldMatrix, XMMatrixTranspose(W));
+	XMStoreFloat4x4(&_worldMatrix, XMMatrixIdentity());
 
 	_position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	_rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
