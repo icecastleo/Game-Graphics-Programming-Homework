@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Entity.h"
 #include "Camera.h"
+#include "Material.h"
 
 class Game 
 	: public DXCore
@@ -33,10 +34,11 @@ private:
 	std::vector<Entity *> entities;
 
 	Camera *camera;
+	Material *material;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 
-	void CreateMatrices();
+	//void CreateMatrices();
 	void CreateBasicGeometry();
 
 	// Wrappers for DirectX shaders to provide simplified functionality

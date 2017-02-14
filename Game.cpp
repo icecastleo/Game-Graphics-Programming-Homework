@@ -24,7 +24,6 @@ Game::Game(HINSTANCE hInstance)
 		true)			   // Show extra stats (fps) in title bar?
 {
 	camera = new Camera();
-	camera->resize((float)width / height);
 
 	prevMousePos.x = MINLONG32;
 
@@ -57,6 +56,7 @@ Game::~Game()
 	}
 
 	delete camera;
+	delete material;
 	// Delete our simple shader objects, which
 	// will clean up their own internal DirectX stuff
 	delete vertexShader;
@@ -73,8 +73,32 @@ void Game::Init()
 	// geometry to draw and some simple camera matrices.
 	//  - You'll be expanding and/or replacing these later
 	LoadShaders();
+	material = new Material(vertexShader, pixelShader);
+
 	//CreateMatrices();
+	camera->resize((float)width / height);
+	
 	CreateBasicGeometry();
+
+	Entity *e1 = new Entity(meshes[0], material);
+	e1->setPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	entities.push_back(e1);
+
+	Entity *e2 = new Entity(meshes[0], material);
+	e2->setPosition(XMFLOAT3(3.0f, 0.0f, 0.0f));
+	entities.push_back(e2);
+
+	Entity *e3 = new Entity(meshes[1], material);
+	e3->setPosition(XMFLOAT3(0.0f, 2.0f, 0.0f));
+	entities.push_back(e3);
+
+	Entity *e4 = new Entity(meshes[2], material);
+	e4->setPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	entities.push_back(e4);
+
+	Entity *e5 = new Entity(meshes[2], material);
+	e5->setPosition(XMFLOAT3(3.0f, 0.0f, 0.0f));
+	entities.push_back(e5);
 
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
@@ -116,34 +140,34 @@ void Game::LoadShaders()
 // Initializes the matrices necessary to represent our geometry's 
 // transformations and our 3D camera
 // --------------------------------------------------------
-void Game::CreateMatrices()
-{
-	//// Create the View matrix
-	//// - In an actual game, recreate this matrix every time the camera 
-	////    moves (potentially every frame)
-	//// - We're using the LOOK TO function, which takes the position of the
-	////    camera and the direction vector along which to look (as well as "up")
-	//// - Another option is the LOOK AT function, to look towards a specific
-	////    point in 3D space
-	//XMVECTOR pos = XMVectorSet(1.5f, 0, -10, 0);
-	//XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
-	//XMVECTOR up  = XMVectorSet(0, 1, 0, 0);
-	//XMMATRIX V   = XMMatrixLookToLH(
-	//	pos,     // The position of the "camera"
-	//	dir,     // Direction the camera is looking
-	//	up);     // "Up" direction in 3D space (prevents roll)
-	//XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
-	
-	// Create the Projection matrix
-	// - This should match the window's aspect ratio, and also update anytime
-	//   the window resizes (which is already happening in OnResize() below)
-	//XMMATRIX P = XMMatrixPerspectiveFovLH(
-	//	0.25f * 3.1415926535f,		// Field of View Angle
-	//	(float)width / height,		// Aspect ratio
-	//	0.1f,						// Near clip plane distance
-	//	100.0f);					// Far clip plane distance
-	//XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
-}
+//void Game::CreateMatrices()
+//{
+//	//// Create the View matrix
+//	//// - In an actual game, recreate this matrix every time the camera 
+//	////    moves (potentially every frame)
+//	//// - We're using the LOOK TO function, which takes the position of the
+//	////    camera and the direction vector along which to look (as well as "up")
+//	//// - Another option is the LOOK AT function, to look towards a specific
+//	////    point in 3D space
+//	//XMVECTOR pos = XMVectorSet(1.5f, 0, -10, 0);
+//	//XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
+//	//XMVECTOR up  = XMVectorSet(0, 1, 0, 0);
+//	//XMMATRIX V   = XMMatrixLookToLH(
+//	//	pos,     // The position of the "camera"
+//	//	dir,     // Direction the camera is looking
+//	//	up);     // "Up" direction in 3D space (prevents roll)
+//	//XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
+//	
+//	// Create the Projection matrix
+//	// - This should match the window's aspect ratio, and also update anytime
+//	//   the window resizes (which is already happening in OnResize() below)
+//	//XMMATRIX P = XMMatrixPerspectiveFovLH(
+//	//	0.25f * 3.1415926535f,		// Field of View Angle
+//	//	(float)width / height,		// Aspect ratio
+//	//	0.1f,						// Near clip plane distance
+//	//	100.0f);					// Far clip plane distance
+//	//XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
+//}
 
 
 // --------------------------------------------------------
@@ -199,26 +223,6 @@ void Game::CreateBasicGeometry()
 	int indices3[] = { 0, 1, 2 };
 
 	meshes.push_back(new Mesh(vertices3, 3, indices3, 3, device));
-
-	Entity *e1 = new Entity(meshes[0]);
-	e1->setPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	entities.push_back(e1);
-
-	Entity *e2 = new Entity(meshes[0]);
-	e2->setPosition(XMFLOAT3(3.0f, 0.0f, 0.0f));
-	entities.push_back(e2);
-
-	Entity *e3 = new Entity(meshes[1]);
-	e3->setPosition(XMFLOAT3(0.0f, 2.0f, 0.0f));
-	entities.push_back(e3);
-
-	Entity *e4 = new Entity(meshes[2]);
-	e4->setPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	entities.push_back(e4);
-
-	Entity *e5 = new Entity(meshes[2]);
-	e5->setPosition(XMFLOAT3(3.0f, 0.0f, 0.0f));
-	entities.push_back(e5);
 }
 
 // --------------------------------------------------------
@@ -231,14 +235,6 @@ void Game::OnResize()
 	DXCore::OnResize();
 
 	camera->resize((float)width / height);
-
-	//// Update our projection matrix since the window size changed
-	//XMMATRIX P = XMMatrixPerspectiveFovLH(
-	//	0.25f * 3.1415926535f,	// Field of View Angle
-	//	(float)width / height,	// Aspect ratio
-	//	0.1f,				  	// Near clip plane distance
-	//	100.0f);			  	// Far clip plane distance
-	//XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
 }
 
 // --------------------------------------------------------
@@ -246,14 +242,14 @@ void Game::OnResize()
 // --------------------------------------------------------
 void Game::Update(float deltaTime, float totalTime)
 {
+	camera->update(deltaTime, totalTime);
+
 	for (auto &entity : entities) {
 		entity->Move(sin(totalTime * 5) / 500, 0.0f, 0.0f);
 		//entity->setScale(XMFLOAT3(1.0f, (sin(totalTime) + 2) / 3, 1.0f));
 		//entity->setRotation(XMFLOAT3(0.0f, 0.0f, totalTime));
 		entity->Update();
 	}
-
-	camera->update(deltaTime, totalTime);
 
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
@@ -279,28 +275,7 @@ void Game::Draw(float deltaTime, float totalTime)
 		0);
 
 	for (auto &entity : entities) {
-		// Send data to shader variables
-		//  - Do this ONCE PER OBJECT you're drawing
-		//  - This is actually a complex process of copying data to a local buffer
-		//    and then copying that entire buffer to the GPU.  
-		//  - The "SimpleShader" class handles all of that for you.
-
-		vertexShader->SetMatrix4x4("world", entity->getWorldMatrix());
-		//vertexShader->SetMatrix4x4("view", viewMatrix);
-		vertexShader->SetMatrix4x4("view", camera->getViewMatrix());
-		vertexShader->SetMatrix4x4("projection", camera->getProjectionMatrix());
-
-		// Once you've set all of the data you care to change for
-		// the next draw call, you need to actually send it to the GPU
-		//  - If you skip this, the "SetMatrix" calls above won't make it to the GPU!
-		vertexShader->CopyAllBufferData();
-
-		// Set the vertex and pixel shaders to use for the next Draw() command
-		//  - These don't technically need to be set every frame...YET
-		//  - Once you start applying different shaders to different objects,
-		//    you'll need to swap the current shaders before each draw
-		vertexShader->SetShader();
-		pixelShader->SetShader();
+		entity->PrepareMaterial(camera->getViewMatrix(), camera->getProjectionMatrix());
 
 		// Set buffers in the input assembler
 		//  - Do this ONCE PER OBJECT you're drawing, since each object might

@@ -1,14 +1,14 @@
 #pragma once
 
-//#include "DXCore.h"
 #include <DirectXMath.h>
 #include <vector>
 #include "Mesh.h"
+#include "Material.h"
 
 class Entity
 {
 public:
-	Entity(Mesh *mesh);
+	Entity(Mesh *mesh, Material *material);
 	~Entity();
 
 	Mesh *getMesh();
@@ -28,11 +28,12 @@ public:
 	void Move(float x, float y, float z);
 	//void MoveFoward(float x, float y, float z);
 
-	// update world matrix
 	void Update();
+	void PrepareMaterial(DirectX::XMFLOAT4X4 _viewMatrix, DirectX::XMFLOAT4X4 _projectionMatrix);
 
 private:
-	Mesh *_mesh;
+	Mesh *mesh;
+	Material *material;
 
 	DirectX::XMFLOAT4X4 _worldMatrix;
 	DirectX::XMFLOAT3 _position;
