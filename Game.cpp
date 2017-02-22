@@ -84,21 +84,25 @@ void Game::Init()
 	e1->setPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	entities.push_back(e1);
 
-	Entity *e2 = new Entity(meshes[0], material);
+	Entity *e2 = new Entity(meshes[1], material);
 	e2->setPosition(XMFLOAT3(3.0f, 0.0f, 0.0f));
 	entities.push_back(e2);
 
-	Entity *e3 = new Entity(meshes[1], material);
-	e3->setPosition(XMFLOAT3(0.0f, 2.0f, 0.0f));
+	Entity *e3 = new Entity(meshes[2], material);
+	e3->setPosition(XMFLOAT3(-3.0f, 0.0f, 0.0f));
 	entities.push_back(e3);
 
-	Entity *e4 = new Entity(meshes[2], material);
-	e4->setPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	Entity *e4 = new Entity(meshes[3], material);
+	e4->setPosition(XMFLOAT3(0.0f, 2.0f, 0.0f));
 	entities.push_back(e4);
 
-	Entity *e5 = new Entity(meshes[2], material);
-	e5->setPosition(XMFLOAT3(3.0f, 0.0f, 0.0f));
+	Entity *e5 = new Entity(meshes[4], material);
+	e5->setPosition(XMFLOAT3(3.0f, 2.0f, 0.0f));
 	entities.push_back(e5);
+
+	Entity *e6 = new Entity(meshes[5], material);
+	e6->setPosition(XMFLOAT3(-3.0f, 2.0f, 0.0f));
+	entities.push_back(e6);
 
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
@@ -175,54 +179,61 @@ void Game::LoadShaders()
 // --------------------------------------------------------
 void Game::CreateBasicGeometry()
 {
-	// Create some temporary variables to represent colors
-	// - Not necessary, just makes things more readable
-	XMFLOAT4 red	= XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	XMFLOAT4 green	= XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	XMFLOAT4 blue	= XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	//// Create some temporary variables to represent colors
+	//// - Not necessary, just makes things more readable
+	//XMFLOAT4 red	= XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	//XMFLOAT4 green	= XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	//XMFLOAT4 blue	= XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	// Set up the vertices of the triangle we would like to draw
-	// - We're going to copy this array, exactly as it exists in memory
-	//    over to a DirectX-controlled data structure (the vertex buffer)
-	Vertex vertices[] = 
-	{
-		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(+1.5f, -1.0f, +0.0f), blue },
-		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), green },
-	};
+	//// Set up the vertices of the triangle we would like to draw
+	//// - We're going to copy this array, exactly as it exists in memory
+	////    over to a DirectX-controlled data structure (the vertex buffer)
+	//Vertex vertices[] = 
+	//{
+	//	{ XMFLOAT3(+0.0f, +1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//	{ XMFLOAT3(+1.5f, -1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//	{ XMFLOAT3(-1.5f, -1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//};
 
-	// Set up the indices, which tell us which vertices to use and in which order
-	// - This is somewhat redundant for just 3 vertices (it's a simple example)
-	// - Indices are technically not required if the vertices are in the buffer 
-	//    in the correct order and each one will be used exactly once
-	// - But just to see how it's done...
-	int indices[] = { 0, 1, 2 };
+	//// Set up the indices, which tell us which vertices to use and in which order
+	//// - This is somewhat redundant for just 3 vertices (it's a simple example)
+	//// - Indices are technically not required if the vertices are in the buffer 
+	////    in the correct order and each one will be used exactly once
+	//// - But just to see how it's done...
+	//UINT indices[] = { 0, 1, 2 };
 
-	meshes.push_back(new Mesh(vertices, 3, indices, 3, device));
+	//meshes.push_back(new Mesh(vertices, 3, indices, 3, device));
 
-	// Additional meshes
-	Vertex vertices2[] =
-	{
-		{ XMFLOAT3(+3.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(+5.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(+5.0f, -1.0f, +0.0f), blue },
-		{ XMFLOAT3(+3.0f, -1.0f, +0.0f), green },
-	};
+	//// Additional meshes
+	//Vertex vertices2[] =
+	//{
+	//	{ XMFLOAT3(+3.0f, +1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//	{ XMFLOAT3(+5.0f, +1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//	{ XMFLOAT3(+5.0f, -1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//	{ XMFLOAT3(+3.0f, -1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//};
 
-	int indices2[] = { 0, 1, 2, 0, 2, 3 };
+	//UINT indices2[] = { 0, 1, 2, 0, 2, 3 };
 
-	meshes.push_back(new Mesh(vertices2, 4, indices2, 6, device));
+	//meshes.push_back(new Mesh(vertices2, 4, indices2, 6, device));
 
-	Vertex vertices3[] =
-	{
-		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), red },
-		{ XMFLOAT3(-3.0f, +1.0f, +0.0f), blue },
-		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), green },
-	};
+	//Vertex vertices3[] =
+	//{
+	//	{ XMFLOAT3(-1.5f, -1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//	{ XMFLOAT3(-3.0f, +1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//	{ XMFLOAT3(+0.0f, +1.0f, +0.0f), XMFLOAT3(+0.0f, +0.0f, -1.0f), XMFLOAT2(+0.0f, +0.0f) },
+	//};
 
-	int indices3[] = { 0, 1, 2 };
+	//UINT indices3[] = { 0, 1, 2 };
 
-	meshes.push_back(new Mesh(vertices3, 3, indices3, 3, device));
+	//meshes.push_back(new Mesh(vertices3, 3, indices3, 3, device));
+
+	meshes.push_back(new Mesh("Debug/Assets/Models/cone.obj", device));
+	meshes.push_back(new Mesh("Debug/Assets/Models/cube.obj", device));
+	meshes.push_back(new Mesh("Debug/Assets/Models/cylinder.obj", device));
+	meshes.push_back(new Mesh("Debug/Assets/Models/helix.obj", device));
+	meshes.push_back(new Mesh("Debug/Assets/Models/sphere.obj", device));
+	meshes.push_back(new Mesh("Debug/Assets/Models/torus.obj", device));
 }
 
 // --------------------------------------------------------
@@ -245,9 +256,9 @@ void Game::Update(float deltaTime, float totalTime)
 	camera->update(deltaTime, totalTime);
 
 	for (auto &entity : entities) {
-		entity->Move(sin(totalTime * 5) / 500, 0.0f, 0.0f);
+		//entity->Move(sin(totalTime * 5) / 500, 0.0f, 0.0f);
 		//entity->setScale(XMFLOAT3(1.0f, (sin(totalTime) + 2) / 3, 1.0f));
-		//entity->setRotation(XMFLOAT3(0.0f, 0.0f, totalTime));
+		entity->setRotation(XMFLOAT3(totalTime, totalTime, 0.0f));
 		entity->Update();
 	}
 

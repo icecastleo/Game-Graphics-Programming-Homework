@@ -6,7 +6,8 @@
 class Mesh
 {
 public:
-	Mesh(Vertex *vertices, int vertexCount, int *indices, int indexCount, ID3D11Device *device);
+	Mesh(Vertex *vertices, int vertexCount, UINT *indices, int indexCount, ID3D11Device *device);
+	Mesh(char* objFile, ID3D11Device * device);
 	~Mesh();
 
 	ID3D11Buffer *GetVertexBuffer();
@@ -17,5 +18,7 @@ private:
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
 	int indexCount;
+
+	void init(Vertex *vertices, int vertexCount, UINT *indices, int indexCount, ID3D11Device *device);
 };
 
