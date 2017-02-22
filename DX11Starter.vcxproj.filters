@@ -16,6 +16,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{5f37ec8c-c624-4f3d-8d2e-1571a1df475b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Models">
+      <UniqueIdentifier>{56852905-0875-4559-a313-ff95af9cbaa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -40,6 +43,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,6 +74,15 @@
     <ClInclude Include="Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
@@ -76,5 +91,25 @@
     <FxCompile Include="VertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Assets\Models\cone.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Assets\Models\cube.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Assets\Models\cylinder.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Assets\Models\helix.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Assets\Models\sphere.obj">
+      <Filter>Models</Filter>
+    </Object>
+    <Object Include="Assets\Models\torus.obj">
+      <Filter>Models</Filter>
+    </Object>
   </ItemGroup>
 </Project>

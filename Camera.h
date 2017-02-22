@@ -21,7 +21,7 @@ public:
 	void rotateX(float x);
 	void rotateY(float y);
 
-	void resize(float ratio);
+	void setAspectRatio(float ratio);
 
 	void update(float deltaTime, float totalTime);
 

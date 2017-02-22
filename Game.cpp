@@ -69,6 +69,10 @@ Game::~Game()
 // --------------------------------------------------------
 void Game::Init()
 {
+	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	light.DiffuseColor = XMFLOAT4(0, 0, 1, 1);
+	light.Direction = XMFLOAT3(1, -1, 0);
+
 	// Helper methods for loading shaders, creating some basic
 	// geometry to draw and some simple camera matrices.
 	//  - You'll be expanding and/or replacing these later
@@ -76,9 +80,29 @@ void Game::Init()
 	material = new Material(vertexShader, pixelShader);
 
 	//CreateMatrices();
-	camera->resize((float)width / height);
+	camera->setAspectRatio((float)width / height);
 	
 	CreateBasicGeometry();
+
+	//Entity *e1 = new Entity(meshes[0], material);
+	//e1->setPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//entities.push_back(e1);
+
+	//Entity *e2 = new Entity(meshes[0], material);
+	//e2->setPosition(XMFLOAT3(3.0f, 0.0f, 0.0f));
+	//entities.push_back(e2);
+
+	//Entity *e3 = new Entity(meshes[1], material);
+	//e3->setPosition(XMFLOAT3(0.0f, 2.0f, 0.0f));
+	//entities.push_back(e3);
+
+	//Entity *e4 = new Entity(meshes[2], material);
+	//e4->setPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//entities.push_back(e4);
+
+	//Entity *e5 = new Entity(meshes[2], material);
+	//e5->setPosition(XMFLOAT3(3.0f, 0.0f, 0.0f));
+	//entities.push_back(e5);
 
 	Entity *e1 = new Entity(meshes[0], material);
 	e1->setPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -228,12 +252,12 @@ void Game::CreateBasicGeometry()
 
 	//meshes.push_back(new Mesh(vertices3, 3, indices3, 3, device));
 
-	meshes.push_back(new Mesh("Debug/Assets/Models/cone.obj", device));
-	meshes.push_back(new Mesh("Debug/Assets/Models/cube.obj", device));
-	meshes.push_back(new Mesh("Debug/Assets/Models/cylinder.obj", device));
-	meshes.push_back(new Mesh("Debug/Assets/Models/helix.obj", device));
-	meshes.push_back(new Mesh("Debug/Assets/Models/sphere.obj", device));
-	meshes.push_back(new Mesh("Debug/Assets/Models/torus.obj", device));
+	meshes.push_back(new Mesh("Assets/Models/cone.obj", device));
+	meshes.push_back(new Mesh("Assets/Models/cube.obj", device));
+	meshes.push_back(new Mesh("Assets/Models/cylinder.obj", device));
+	meshes.push_back(new Mesh("Assets/Models/helix.obj", device));
+	meshes.push_back(new Mesh("Assets/Models/sphere.obj", device));
+	meshes.push_back(new Mesh("Assets/Models/torus.obj", device));
 }
 
 // --------------------------------------------------------
@@ -245,7 +269,7 @@ void Game::OnResize()
 	// Handle base-level DX resize stuff
 	DXCore::OnResize();
 
-	camera->resize((float)width / height);
+	camera->setAspectRatio((float)width / height);
 }
 
 // --------------------------------------------------------
@@ -286,6 +310,14 @@ void Game::Draw(float deltaTime, float totalTime)
 		0);
 
 	for (auto &entity : entities) {
+
+		// FIXME: or make entity->material to public?
+		material->getPixelShader()->SetData(
+			"light",  // The name of the (eventual) variable in the shader
+			&light,   // The address of the data to copy
+			sizeof(DirectionalLight)); // The size of the data to copy
+
+		// shaders
 		entity->PrepareMaterial(camera->getViewMatrix(), camera->getProjectionMatrix());
 
 		// Set buffers in the input assembler

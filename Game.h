@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "Material.h"
+#include "Light.h"
 
 class Game 
 	: public DXCore
@@ -35,6 +36,8 @@ private:
 
 	Camera *camera;
 	Material *material;
+
+	DirectionalLight light;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 

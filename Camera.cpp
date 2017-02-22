@@ -69,15 +69,15 @@ void Camera::rotateByMouse(float x, float y)
 
 void Camera::rotateX(float x)
 {
-	_rotationX = clamp<float>(_rotationX + x, -0.4, 0.4);
+	_rotationX = clamp<float>(_rotationX + x, -0.4f, 0.4f);
 }
 
 void Camera::rotateY(float y)
 {
-	_rotationY = clamp<float>(_rotationY + y, -0.8, 0.8);
+	_rotationY = clamp<float>(_rotationY + y, -0.8f, 0.8f);
 }
 
-void Camera::resize(float ratio)
+void Camera::setAspectRatio(float ratio)
 {
 	XMMATRIX P = XMMatrixPerspectiveFovLH(
 		0.25f * 3.1415926535f,		// Field of View Angle
