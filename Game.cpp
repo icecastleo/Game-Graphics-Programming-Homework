@@ -69,9 +69,12 @@ Game::~Game()
 // --------------------------------------------------------
 void Game::Init()
 {
-	light.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	light.DiffuseColor = XMFLOAT4(0, 0, 1, 1);
-	light.Direction = XMFLOAT3(1, -1, 0);
+	dirLight.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	dirLight.DiffuseColor = XMFLOAT4(0, 0, 1, 1);
+	dirLight.Direction = XMFLOAT3(1, -1, 0);
+
+	pointLight.PointLightColor = XMFLOAT4(1, 1, 0, 1);
+	pointLight.PointLightPosition = XMFLOAT3(0, -2, 0);
 
 	// Helper methods for loading shaders, creating some basic
 	// geometry to draw and some simple camera matrices.
@@ -278,6 +281,7 @@ void Game::OnResize()
 void Game::Update(float deltaTime, float totalTime)
 {
 	camera->update(deltaTime, totalTime);
+	pointLight.CameraPosition = camera->getPosition();
 
 	for (auto &entity : entities) {
 		//entity->Move(sin(totalTime * 5) / 500, 0.0f, 0.0f);
@@ -313,9 +317,14 @@ void Game::Draw(float deltaTime, float totalTime)
 
 		// FIXME: or make entity->material to public?
 		material->getPixelShader()->SetData(
-			"light",  // The name of the (eventual) variable in the shader
-			&light,   // The address of the data to copy
+			"dirLight",  // The name of the (eventual) variable in the shader
+			&dirLight,   // The address of the data to copy
 			sizeof(DirectionalLight)); // The size of the data to copy
+
+		material->getPixelShader()->SetData(
+			"pointLight",  // The name of the (eventual) variable in the shader
+			&pointLight,   // The address of the data to copy
+			sizeof(PointLight)); // The size of the data to copy
 
 		// shaders
 		entity->PrepareMaterial(camera->getViewMatrix(), camera->getProjectionMatrix());

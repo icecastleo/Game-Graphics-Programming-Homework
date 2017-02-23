@@ -37,7 +37,8 @@ private:
 	Camera *camera;
 	Material *material;
 
-	DirectionalLight light;
+	DirectionalLight dirLight;
+	PointLight pointLight;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
 	void LoadShaders(); 

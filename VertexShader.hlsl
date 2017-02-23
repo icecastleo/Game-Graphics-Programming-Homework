@@ -44,6 +44,7 @@ struct VertexToPixel
 	float4 position		: SV_POSITION;	// XYZW position (System Value Position)
 	float3 normal		: NORMAL;
 	float2 uv			: TEXCOORD;
+	float3 worldPos		: WORLDPOS;
 };
 
 // --------------------------------------------------------
@@ -76,6 +77,10 @@ VertexToPixel main( VertexShaderInput input )
 
 	output.normal = mul(input.normal, (float3x3)worldViewProj);
 	output.uv = input.uv;
+
+	// Calculate where the vertex would end up after
+	// its transformations (in world space)
+	output.worldPos = mul(float4(input.position, 1.0f), world).xyz;
 
 	// Whatever we return will make its way through the pipeline to the
 	// next programmable stage we're using (the pixel shader for now)

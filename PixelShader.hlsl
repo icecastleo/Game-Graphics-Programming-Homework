@@ -14,6 +14,7 @@ struct VertexToPixel
 	float4 position		: SV_POSITION;
 	float3 normal		: NORMAL;
 	float2 uv			: TEXCOORD;
+	float3 worldPos		: WORLDPOS;
 };
 
 struct DirectionalLight
@@ -21,12 +22,38 @@ struct DirectionalLight
 	float4 AmbientColor;
 	float4 DiffuseColor;
 	float3 Direction;
+	float padding;
+};
+
+struct PointLight 
+{
+	float4 PointLightColor;
+	float3 PointLightPosition;
+	float padding;
+	float3 CameraPosition;
 };
 
 cbuffer externalData : register(b0)
 {
-	DirectionalLight light;
+	DirectionalLight dirLight;
+	PointLight  pointLight;
 };
+
+float4 getDirLightColor(DirectionalLight light, VertexToPixel input) {
+	float lightAmount = saturate(dot(input.normal, normalize(-light.Direction)));
+	return lightAmount * light.DiffuseColor;
+}
+
+float4 getPointLightColor(PointLight light, VertexToPixel input) {
+	float lightAmount = saturate(dot(input.normal, normalize(light.PointLightPosition - input.worldPos)));
+	return lightAmount * light.PointLightColor;
+}
+
+// Specular highlight for point light
+float getBlinnSpecular(PointLight light, VertexToPixel input) {
+	float specular = saturate(dot(input.normal, normalize(light.PointLightPosition + light.CameraPosition - input.worldPos - input.worldPos)));
+	return pow(specular, 8);
+}
 
 // --------------------------------------------------------
 // The entry point (main method) for our pixel shader
@@ -39,11 +66,18 @@ cbuffer externalData : register(b0)
 // --------------------------------------------------------
 float4 main(VertexToPixel input) : SV_TARGET
 {
-	// Just return the input color
 	// - This color (like most values passing through the rasterizer) is 
 	//   interpolated for each pixel between the corresponding vertices 
 	//   of the triangle we're rendering
 
-	return light.DiffuseColor;
+	// Renormalize interpolated normals
+	input.normal = normalize(input.normal);
+	
 	//return float4(input.normal, 1);
+	//return float4(0.1, 0.1, 0.1, 1);
+
+	return getDirLightColor(dirLight, input)
+		+ dirLight.AmbientColor
+		+ getPointLightColor(pointLight, input)
+		+ getBlinnSpecular(pointLight, input);
 }
