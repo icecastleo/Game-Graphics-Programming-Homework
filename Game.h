@@ -36,23 +36,23 @@ private:
 
 	Camera *camera;
 	Material *material;
+	Material *material2;
 
 	DirectionalLight dirLight;
 	PointLight pointLight;
 
 	// Initialization helper methods - feel free to customize, combine, etc.
-	void LoadShaders(); 
-	//void CreateMatrices();
+	void LoadShaders();
+	void LoadTexture();
 	void CreateBasicGeometry();
 
 	// Wrappers for DirectX shaders to provide simplified functionality
 	SimpleVertexShader* vertexShader;
 	SimplePixelShader* pixelShader;
 
-	// The matrices to go from model space to screen space
-	//DirectX::XMFLOAT4X4 worldMatrix;
-	//DirectX::XMFLOAT4X4 viewMatrix;
-	//DirectX::XMFLOAT4X4 projectionMatrix;
+	ID3D11ShaderResourceView* srv;
+	ID3D11ShaderResourceView* srv2;
+	ID3D11SamplerState* samplerState;
 
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.

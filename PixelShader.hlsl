@@ -39,6 +39,9 @@ cbuffer externalData : register(b0)
 	PointLight  pointLight;
 };
 
+Texture2D diffuseTexture  : register(t0);
+SamplerState basicSampler : register(s0);
+
 float4 getDirLightColor(DirectionalLight light, VertexToPixel input) {
 	float lightAmount = saturate(dot(input.normal, normalize(-light.Direction)));
 	return lightAmount * light.DiffuseColor;
@@ -51,7 +54,7 @@ float4 getPointLightColor(PointLight light, VertexToPixel input) {
 
 // Specular highlight for point light
 float getBlinnSpecular(PointLight light, VertexToPixel input) {
-	float specular = saturate(dot(input.normal, normalize(light.PointLightPosition + light.CameraPosition - input.worldPos - input.worldPos)));
+	float specular = saturate(dot(input.normal, normalize(light.PointLightPosition - input.worldPos + light.CameraPosition - input.worldPos)));
 	return pow(specular, 8);
 }
 
@@ -70,14 +73,20 @@ float4 main(VertexToPixel input) : SV_TARGET
 	//   interpolated for each pixel between the corresponding vertices 
 	//   of the triangle we're rendering
 
+	float4 surfaceColor = diffuseTexture.Sample(basicSampler, input.uv);
+
 	// Renormalize interpolated normals
 	input.normal = normalize(input.normal);
 	
 	//return float4(input.normal, 1);
 	//return float4(0.1, 0.1, 0.1, 1);
 
-	return getDirLightColor(dirLight, input)
+	float4 light = getDirLightColor(dirLight, input)
 		+ dirLight.AmbientColor
 		+ getPointLightColor(pointLight, input)
 		+ getBlinnSpecular(pointLight, input);
+
+	return surfaceColor * light;
+	//return surfaceColor;
+	//return light;
 }

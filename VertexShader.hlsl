@@ -76,6 +76,9 @@ VertexToPixel main( VertexShaderInput input )
 	output.position = mul(float4(input.position, 1.0f), worldViewProj);
 
 	output.normal = mul(input.normal, (float3x3)worldViewProj);
+
+	// Normalize the result (length of 1)
+	output.normal = normalize(output.normal);
 	output.uv = input.uv;
 
 	// Calculate where the vertex would end up after

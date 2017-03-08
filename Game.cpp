@@ -3,6 +3,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <math.h>
+#include "WICTextureLoader.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -28,8 +29,12 @@ Game::Game(HINSTANCE hInstance)
 	prevMousePos.x = MINLONG32;
 
 	// Initialize fields
+	material = 0;
+	material2 = 0;
+
 	vertexShader = 0;
 	pixelShader = 0;
+
 
 #if defined(DEBUG) || defined(_DEBUG)
 	// Do we want a console window?  Probably only in debug mode
@@ -57,10 +62,16 @@ Game::~Game()
 
 	delete camera;
 	delete material;
+	delete material2;
+	
 	// Delete our simple shader objects, which
 	// will clean up their own internal DirectX stuff
 	delete vertexShader;
 	delete pixelShader;
+	
+	srv->Release();
+	srv2->Release();
+	samplerState->Release();
 }
 
 // --------------------------------------------------------
@@ -80,9 +91,11 @@ void Game::Init()
 	// geometry to draw and some simple camera matrices.
 	//  - You'll be expanding and/or replacing these later
 	LoadShaders();
-	material = new Material(vertexShader, pixelShader);
+	LoadTexture();
 
-	//CreateMatrices();
+	material = new Material(vertexShader, pixelShader, srv, samplerState);
+	material2 = new Material(vertexShader, pixelShader, srv2, samplerState);
+
 	camera->setAspectRatio((float)width / height);
 	
 	CreateBasicGeometry();
@@ -119,15 +132,15 @@ void Game::Init()
 	e3->setPosition(XMFLOAT3(-3.0f, 0.0f, 0.0f));
 	entities.push_back(e3);
 
-	Entity *e4 = new Entity(meshes[3], material);
+	Entity *e4 = new Entity(meshes[3], material2);
 	e4->setPosition(XMFLOAT3(0.0f, 2.0f, 0.0f));
 	entities.push_back(e4);
 
-	Entity *e5 = new Entity(meshes[4], material);
+	Entity *e5 = new Entity(meshes[4], material2);
 	e5->setPosition(XMFLOAT3(3.0f, 2.0f, 0.0f));
 	entities.push_back(e5);
 
-	Entity *e6 = new Entity(meshes[5], material);
+	Entity *e6 = new Entity(meshes[5], material2);
 	e6->setPosition(XMFLOAT3(-3.0f, 2.0f, 0.0f));
 	entities.push_back(e6);
 
@@ -165,41 +178,22 @@ void Game::LoadShaders()
 	// scenarios work correctly, although others exist
 }
 
+void Game::LoadTexture() 
+{
+	HRESULT hr = CreateWICTextureFromFile(device, context, L"Assets/Textures/HerringboneFloor_albedo_M.tiff", nullptr, &srv);
+	hr = CreateWICTextureFromFile(device, context, L"Assets/Textures/GrayBareConcrete_albedo_M.tiff", nullptr, &srv2);
+	
+	D3D11_SAMPLER_DESC sd = {};
+	
+	sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sd.MaxLOD = D3D11_FLOAT32_MAX;
 
-
-// --------------------------------------------------------
-// Initializes the matrices necessary to represent our geometry's 
-// transformations and our 3D camera
-// --------------------------------------------------------
-//void Game::CreateMatrices()
-//{
-//	//// Create the View matrix
-//	//// - In an actual game, recreate this matrix every time the camera 
-//	////    moves (potentially every frame)
-//	//// - We're using the LOOK TO function, which takes the position of the
-//	////    camera and the direction vector along which to look (as well as "up")
-//	//// - Another option is the LOOK AT function, to look towards a specific
-//	////    point in 3D space
-//	//XMVECTOR pos = XMVectorSet(1.5f, 0, -10, 0);
-//	//XMVECTOR dir = XMVectorSet(0, 0, 1, 0);
-//	//XMVECTOR up  = XMVectorSet(0, 1, 0, 0);
-//	//XMMATRIX V   = XMMatrixLookToLH(
-//	//	pos,     // The position of the "camera"
-//	//	dir,     // Direction the camera is looking
-//	//	up);     // "Up" direction in 3D space (prevents roll)
-//	//XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
-//	
-//	// Create the Projection matrix
-//	// - This should match the window's aspect ratio, and also update anytime
-//	//   the window resizes (which is already happening in OnResize() below)
-//	//XMMATRIX P = XMMatrixPerspectiveFovLH(
-//	//	0.25f * 3.1415926535f,		// Field of View Angle
-//	//	(float)width / height,		// Aspect ratio
-//	//	0.1f,						// Near clip plane distance
-//	//	100.0f);					// Far clip plane distance
-//	//XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
-//}
-
+	hr = device->CreateSamplerState(&sd, &samplerState);
+	//DX::ThrowIfFailed(hr);
+}
 
 // --------------------------------------------------------
 // Creates the geometry we're going to draw - a single triangle for now
@@ -326,7 +320,7 @@ void Game::Draw(float deltaTime, float totalTime)
 			&pointLight,   // The address of the data to copy
 			sizeof(PointLight)); // The size of the data to copy
 
-		// shaders
+		// vertex shader & pixel shader
 		entity->PrepareMaterial(camera->getViewMatrix(), camera->getProjectionMatrix());
 
 		// Set buffers in the input assembler
